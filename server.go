@@ -28,35 +28,46 @@ func (e Echo_Server_Impl) reverse(s string) (result string) {
 
 func (e Echo_Server_Impl) Heartbeat(call echo.Echo_heartbeat) error {
 
+	msg, _ := call.Params.Msg()
+
+	log.Printf("Client Msg is: %s", msg)
+
 	if call.Params.HasCallback() {
-		log.Println("Call back has been passed")
+		log.Println("Client passed a callback to server")
 
 		callback := call.Params.Callback()
 
 		for i := 0; i < 2; i++ {
-			s, _ := callback.Log(call.Ctx, func(params echo.Callback_log_Params) error {
-				return params.SetMsg("Fuck You AAS HOLE ")
+
+			cr, err := callback.Log(call.Ctx, func(params echo.Callback_log_Params) error {
+				return params.SetMsg("HELLO FROM SERVER")
 			}).Struct()
 
-			time.Sleep(20 * time.Second)
+			if err != nil {
+				log.Fatal(err)
+			}
 
-			log.Println(s.IsValid())
+			if !cr.IsValid() {
+				log.Fatal("Invalid Callback result")
+			}
+
+			log.Printf("Calling client for %dx times .... \n", 1)
+
+			log.Println("Sleeping for 5 seconds ....")
+
+			time.Sleep(5 * time.Second)
 		}
 
 		/*
-			s, _ := callback.Log(call.Ctx, func(params echo.Callback_log_Params) error {
-				return params.SetMsg("Fuck You AAS HOLE ")
+			// use this if you need to call only once
+			cr, err := callback.Log(call.Ctx, func(params echo.Callback_log_Params) error {
+				return params.SetMsg("HELLO FROM SERVER")
 			}).Struct()
-
-			fmt.Println(s.IsValid())
 		*/
+
 	} else {
-		log.Println("No Callback")
+		log.Println("No Callback passed by client")
 	}
-
-	msg, _ := call.Params.Msg()
-
-	log.Printf("Client Msg is: %s", msg)
 
 	return nil
 }

@@ -8,9 +8,9 @@ import (
 	"zombiezen.com/go/capnproto2/rpc"
 )
 
-type Callback_Server_Impl struct{}
+type Callback_Client_Impl struct{}
 
-func (h Callback_Server_Impl) Log(call echo.Callback_log) error {
+func (h Callback_Client_Impl) Log(call echo.Callback_log) error {
 
 	msg, _ := call.Params.Msg()
 
@@ -54,7 +54,7 @@ func main() {
 
 	_, err = p.Heartbeat(ctx, func(params echo.Echo_heartbeat_Params) error {
 
-		cb := echo.Callback_ServerToClient(Callback_Server_Impl{})
+		cb := echo.Callback_ServerToClient(Callback_Client_Impl{})
 
 		params.SetCallback(cb)
 

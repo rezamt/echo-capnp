@@ -3,6 +3,11 @@ using Go = import "/go.capnp";
 $Go.package("echo");
 $Go.import("github.com/rezamt/echo");
 
+interface Callback {
+  log @0 (msg :Text) -> ();
+}
+
 interface Echo {
   ping @0 (msg :Text) -> (reply :Text);
+  heartbeat @1 (msg :Text, callback :Callback) -> ();
 }

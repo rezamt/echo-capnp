@@ -10,6 +10,200 @@ import (
 	server "zombiezen.com/go/capnproto2/server"
 )
 
+type Callback struct{ Client capnp.Client }
+
+// Callback_TypeID is the unique identifier for the type Callback.
+const Callback_TypeID = 0xbd50d0267378de94
+
+func (c Callback) Log(ctx context.Context, params func(Callback_log_Params) error, opts ...capnp.CallOption) Callback_log_Results_Promise {
+	if c.Client == nil {
+		return Callback_log_Results_Promise{Pipeline: capnp.NewPipeline(capnp.ErrorAnswer(capnp.ErrNullClient))}
+	}
+	call := &capnp.Call{
+		Ctx: ctx,
+		Method: capnp.Method{
+			InterfaceID:   0xbd50d0267378de94,
+			MethodID:      0,
+			InterfaceName: "echo.capnp:Callback",
+			MethodName:    "log",
+		},
+		Options: capnp.NewCallOptions(opts),
+	}
+	if params != nil {
+		call.ParamsSize = capnp.ObjectSize{DataSize: 0, PointerCount: 1}
+		call.ParamsFunc = func(s capnp.Struct) error { return params(Callback_log_Params{Struct: s}) }
+	}
+	return Callback_log_Results_Promise{Pipeline: capnp.NewPipeline(c.Client.Call(call))}
+}
+
+type Callback_Server interface {
+	Log(Callback_log) error
+}
+
+func Callback_ServerToClient(s Callback_Server) Callback {
+	c, _ := s.(server.Closer)
+	return Callback{Client: server.New(Callback_Methods(nil, s), c)}
+}
+
+func Callback_Methods(methods []server.Method, s Callback_Server) []server.Method {
+	if cap(methods) == 0 {
+		methods = make([]server.Method, 0, 1)
+	}
+
+	methods = append(methods, server.Method{
+		Method: capnp.Method{
+			InterfaceID:   0xbd50d0267378de94,
+			MethodID:      0,
+			InterfaceName: "echo.capnp:Callback",
+			MethodName:    "log",
+		},
+		Impl: func(c context.Context, opts capnp.CallOptions, p, r capnp.Struct) error {
+			call := Callback_log{c, opts, Callback_log_Params{Struct: p}, Callback_log_Results{Struct: r}}
+			return s.Log(call)
+		},
+		ResultsSize: capnp.ObjectSize{DataSize: 0, PointerCount: 0},
+	})
+
+	return methods
+}
+
+// Callback_log holds the arguments for a server call to Callback.log.
+type Callback_log struct {
+	Ctx     context.Context
+	Options capnp.CallOptions
+	Params  Callback_log_Params
+	Results Callback_log_Results
+}
+
+type Callback_log_Params struct{ capnp.Struct }
+
+// Callback_log_Params_TypeID is the unique identifier for the type Callback_log_Params.
+const Callback_log_Params_TypeID = 0xc0182cf9a088c7c4
+
+func NewCallback_log_Params(s *capnp.Segment) (Callback_log_Params, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
+	return Callback_log_Params{st}, err
+}
+
+func NewRootCallback_log_Params(s *capnp.Segment) (Callback_log_Params, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1})
+	return Callback_log_Params{st}, err
+}
+
+func ReadRootCallback_log_Params(msg *capnp.Message) (Callback_log_Params, error) {
+	root, err := msg.RootPtr()
+	return Callback_log_Params{root.Struct()}, err
+}
+
+func (s Callback_log_Params) String() string {
+	str, _ := text.Marshal(0xc0182cf9a088c7c4, s.Struct)
+	return str
+}
+
+func (s Callback_log_Params) Msg() (string, error) {
+	p, err := s.Struct.Ptr(0)
+	return p.Text(), err
+}
+
+func (s Callback_log_Params) HasMsg() bool {
+	p, err := s.Struct.Ptr(0)
+	return p.IsValid() || err != nil
+}
+
+func (s Callback_log_Params) MsgBytes() ([]byte, error) {
+	p, err := s.Struct.Ptr(0)
+	return p.TextBytes(), err
+}
+
+func (s Callback_log_Params) SetMsg(v string) error {
+	return s.Struct.SetText(0, v)
+}
+
+// Callback_log_Params_List is a list of Callback_log_Params.
+type Callback_log_Params_List struct{ capnp.List }
+
+// NewCallback_log_Params creates a new list of Callback_log_Params.
+func NewCallback_log_Params_List(s *capnp.Segment, sz int32) (Callback_log_Params_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 1}, sz)
+	return Callback_log_Params_List{l}, err
+}
+
+func (s Callback_log_Params_List) At(i int) Callback_log_Params {
+	return Callback_log_Params{s.List.Struct(i)}
+}
+
+func (s Callback_log_Params_List) Set(i int, v Callback_log_Params) error {
+	return s.List.SetStruct(i, v.Struct)
+}
+
+func (s Callback_log_Params_List) String() string {
+	str, _ := text.MarshalList(0xc0182cf9a088c7c4, s.List)
+	return str
+}
+
+// Callback_log_Params_Promise is a wrapper for a Callback_log_Params promised by a client call.
+type Callback_log_Params_Promise struct{ *capnp.Pipeline }
+
+func (p Callback_log_Params_Promise) Struct() (Callback_log_Params, error) {
+	s, err := p.Pipeline.Struct()
+	return Callback_log_Params{s}, err
+}
+
+type Callback_log_Results struct{ capnp.Struct }
+
+// Callback_log_Results_TypeID is the unique identifier for the type Callback_log_Results.
+const Callback_log_Results_TypeID = 0xa3fe93942225d89e
+
+func NewCallback_log_Results(s *capnp.Segment) (Callback_log_Results, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0})
+	return Callback_log_Results{st}, err
+}
+
+func NewRootCallback_log_Results(s *capnp.Segment) (Callback_log_Results, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0})
+	return Callback_log_Results{st}, err
+}
+
+func ReadRootCallback_log_Results(msg *capnp.Message) (Callback_log_Results, error) {
+	root, err := msg.RootPtr()
+	return Callback_log_Results{root.Struct()}, err
+}
+
+func (s Callback_log_Results) String() string {
+	str, _ := text.Marshal(0xa3fe93942225d89e, s.Struct)
+	return str
+}
+
+// Callback_log_Results_List is a list of Callback_log_Results.
+type Callback_log_Results_List struct{ capnp.List }
+
+// NewCallback_log_Results creates a new list of Callback_log_Results.
+func NewCallback_log_Results_List(s *capnp.Segment, sz int32) (Callback_log_Results_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0}, sz)
+	return Callback_log_Results_List{l}, err
+}
+
+func (s Callback_log_Results_List) At(i int) Callback_log_Results {
+	return Callback_log_Results{s.List.Struct(i)}
+}
+
+func (s Callback_log_Results_List) Set(i int, v Callback_log_Results) error {
+	return s.List.SetStruct(i, v.Struct)
+}
+
+func (s Callback_log_Results_List) String() string {
+	str, _ := text.MarshalList(0xa3fe93942225d89e, s.List)
+	return str
+}
+
+// Callback_log_Results_Promise is a wrapper for a Callback_log_Results promised by a client call.
+type Callback_log_Results_Promise struct{ *capnp.Pipeline }
+
+func (p Callback_log_Results_Promise) Struct() (Callback_log_Results, error) {
+	s, err := p.Pipeline.Struct()
+	return Callback_log_Results{s}, err
+}
+
 type Echo struct{ Client capnp.Client }
 
 // Echo_TypeID is the unique identifier for the type Echo.
@@ -35,9 +229,31 @@ func (c Echo) Ping(ctx context.Context, params func(Echo_ping_Params) error, opt
 	}
 	return Echo_ping_Results_Promise{Pipeline: capnp.NewPipeline(c.Client.Call(call))}
 }
+func (c Echo) Heartbeat(ctx context.Context, params func(Echo_heartbeat_Params) error, opts ...capnp.CallOption) Echo_heartbeat_Results_Promise {
+	if c.Client == nil {
+		return Echo_heartbeat_Results_Promise{Pipeline: capnp.NewPipeline(capnp.ErrorAnswer(capnp.ErrNullClient))}
+	}
+	call := &capnp.Call{
+		Ctx: ctx,
+		Method: capnp.Method{
+			InterfaceID:   0x835d8112b2f2ebbc,
+			MethodID:      1,
+			InterfaceName: "echo.capnp:Echo",
+			MethodName:    "heartbeat",
+		},
+		Options: capnp.NewCallOptions(opts),
+	}
+	if params != nil {
+		call.ParamsSize = capnp.ObjectSize{DataSize: 0, PointerCount: 2}
+		call.ParamsFunc = func(s capnp.Struct) error { return params(Echo_heartbeat_Params{Struct: s}) }
+	}
+	return Echo_heartbeat_Results_Promise{Pipeline: capnp.NewPipeline(c.Client.Call(call))}
+}
 
 type Echo_Server interface {
 	Ping(Echo_ping) error
+
+	Heartbeat(Echo_heartbeat) error
 }
 
 func Echo_ServerToClient(s Echo_Server) Echo {
@@ -47,7 +263,7 @@ func Echo_ServerToClient(s Echo_Server) Echo {
 
 func Echo_Methods(methods []server.Method, s Echo_Server) []server.Method {
 	if cap(methods) == 0 {
-		methods = make([]server.Method, 0, 1)
+		methods = make([]server.Method, 0, 2)
 	}
 
 	methods = append(methods, server.Method{
@@ -64,6 +280,20 @@ func Echo_Methods(methods []server.Method, s Echo_Server) []server.Method {
 		ResultsSize: capnp.ObjectSize{DataSize: 0, PointerCount: 1},
 	})
 
+	methods = append(methods, server.Method{
+		Method: capnp.Method{
+			InterfaceID:   0x835d8112b2f2ebbc,
+			MethodID:      1,
+			InterfaceName: "echo.capnp:Echo",
+			MethodName:    "heartbeat",
+		},
+		Impl: func(c context.Context, opts capnp.CallOptions, p, r capnp.Struct) error {
+			call := Echo_heartbeat{c, opts, Echo_heartbeat_Params{Struct: p}, Echo_heartbeat_Results{Struct: r}}
+			return s.Heartbeat(call)
+		},
+		ResultsSize: capnp.ObjectSize{DataSize: 0, PointerCount: 0},
+	})
+
 	return methods
 }
 
@@ -73,6 +303,14 @@ type Echo_ping struct {
 	Options capnp.CallOptions
 	Params  Echo_ping_Params
 	Results Echo_ping_Results
+}
+
+// Echo_heartbeat holds the arguments for a server call to Echo.heartbeat.
+type Echo_heartbeat struct {
+	Ctx     context.Context
+	Options capnp.CallOptions
+	Params  Echo_heartbeat_Params
+	Results Echo_heartbeat_Results
 }
 
 type Echo_ping_Params struct{ capnp.Struct }
@@ -221,25 +459,199 @@ func (p Echo_ping_Results_Promise) Struct() (Echo_ping_Results, error) {
 	return Echo_ping_Results{s}, err
 }
 
-const schema_85d3acc39d94e0f8 = "x\xda\x12\x88q`2d\xe5gd`\x08\xe4ae" +
-	"\xfb\xbf\xe7\xf5\xa7MB\x8d\xb1\xcd\x0c\x82\xdc\xcc\xff\x7f" +
-	"<\x982\xf7\xf0\x9a\xcb\xad\x0c\x0c\x8c\x82\xb9M\x82\x85" +
-	"\xec\x0c\x0c\x82\xb9\xee\x82S\xd9\x19\x18\xfekzgm" +
-	"\x8eX\xb6f#\x83\xa0\x00#\x03\x03+#H\xae\xf6" +
-	"\x15\x03\xa3`\xa3=\x03\xe3\xff\x85\x1e\xd5\x1b\x17\xa4\x1b" +
-	"\xfcC\x96]\xf8\x88\x81Qp)H659#_" +
-	"/9\xb1\x801\xaf\xc0\xca59#\x9f!\x80\x911" +
-	"\x90\x85\x99\x95\x81\x01\xae\x91\x11f\xbe\xa0\xa0\x16\x03\x93" +
-	" +;\x7fAf^\xba\x03c\x00#B;\x13T" +
-	"\xbb\x1eHJ%(\xb5\x98\xbf4\xa7\xa48\x90\x85\x99" +
-	"\x85\x81\x81\x85\x91\x81A\x90\xd7\x88\x81!\x90\x83\x991" +
-	"P\x84\x89Q\xbe(\xb5 \xa7\x92\x91\x87\x81\x89\x91\x87" +
-	"\x01\x97\x19\x01\x89E\xec\x89\xb9(F(!\x8c`\xcf" +
-	"-N\x87\x19\x00\x08\x00\x00\xff\xffd\x18P\xf1"
+type Echo_heartbeat_Params struct{ capnp.Struct }
+
+// Echo_heartbeat_Params_TypeID is the unique identifier for the type Echo_heartbeat_Params.
+const Echo_heartbeat_Params_TypeID = 0xadbe401e5cc244fd
+
+func NewEcho_heartbeat_Params(s *capnp.Segment) (Echo_heartbeat_Params, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2})
+	return Echo_heartbeat_Params{st}, err
+}
+
+func NewRootEcho_heartbeat_Params(s *capnp.Segment) (Echo_heartbeat_Params, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2})
+	return Echo_heartbeat_Params{st}, err
+}
+
+func ReadRootEcho_heartbeat_Params(msg *capnp.Message) (Echo_heartbeat_Params, error) {
+	root, err := msg.RootPtr()
+	return Echo_heartbeat_Params{root.Struct()}, err
+}
+
+func (s Echo_heartbeat_Params) String() string {
+	str, _ := text.Marshal(0xadbe401e5cc244fd, s.Struct)
+	return str
+}
+
+func (s Echo_heartbeat_Params) Msg() (string, error) {
+	p, err := s.Struct.Ptr(0)
+	return p.Text(), err
+}
+
+func (s Echo_heartbeat_Params) HasMsg() bool {
+	p, err := s.Struct.Ptr(0)
+	return p.IsValid() || err != nil
+}
+
+func (s Echo_heartbeat_Params) MsgBytes() ([]byte, error) {
+	p, err := s.Struct.Ptr(0)
+	return p.TextBytes(), err
+}
+
+func (s Echo_heartbeat_Params) SetMsg(v string) error {
+	return s.Struct.SetText(0, v)
+}
+
+func (s Echo_heartbeat_Params) Callback() Callback {
+	p, _ := s.Struct.Ptr(1)
+	return Callback{Client: p.Interface().Client()}
+}
+
+func (s Echo_heartbeat_Params) HasCallback() bool {
+	p, err := s.Struct.Ptr(1)
+	return p.IsValid() || err != nil
+}
+
+func (s Echo_heartbeat_Params) SetCallback(v Callback) error {
+	if v.Client == nil {
+		return s.Struct.SetPtr(1, capnp.Ptr{})
+	}
+	seg := s.Segment()
+	in := capnp.NewInterface(seg, seg.Message().AddCap(v.Client))
+	return s.Struct.SetPtr(1, in.ToPtr())
+}
+
+// Echo_heartbeat_Params_List is a list of Echo_heartbeat_Params.
+type Echo_heartbeat_Params_List struct{ capnp.List }
+
+// NewEcho_heartbeat_Params creates a new list of Echo_heartbeat_Params.
+func NewEcho_heartbeat_Params_List(s *capnp.Segment, sz int32) (Echo_heartbeat_Params_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 2}, sz)
+	return Echo_heartbeat_Params_List{l}, err
+}
+
+func (s Echo_heartbeat_Params_List) At(i int) Echo_heartbeat_Params {
+	return Echo_heartbeat_Params{s.List.Struct(i)}
+}
+
+func (s Echo_heartbeat_Params_List) Set(i int, v Echo_heartbeat_Params) error {
+	return s.List.SetStruct(i, v.Struct)
+}
+
+func (s Echo_heartbeat_Params_List) String() string {
+	str, _ := text.MarshalList(0xadbe401e5cc244fd, s.List)
+	return str
+}
+
+// Echo_heartbeat_Params_Promise is a wrapper for a Echo_heartbeat_Params promised by a client call.
+type Echo_heartbeat_Params_Promise struct{ *capnp.Pipeline }
+
+func (p Echo_heartbeat_Params_Promise) Struct() (Echo_heartbeat_Params, error) {
+	s, err := p.Pipeline.Struct()
+	return Echo_heartbeat_Params{s}, err
+}
+
+func (p Echo_heartbeat_Params_Promise) Callback() Callback {
+	return Callback{Client: p.Pipeline.GetPipeline(1).Client()}
+}
+
+type Echo_heartbeat_Results struct{ capnp.Struct }
+
+// Echo_heartbeat_Results_TypeID is the unique identifier for the type Echo_heartbeat_Results.
+const Echo_heartbeat_Results_TypeID = 0x9bdb9edfe278fc95
+
+func NewEcho_heartbeat_Results(s *capnp.Segment) (Echo_heartbeat_Results, error) {
+	st, err := capnp.NewStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0})
+	return Echo_heartbeat_Results{st}, err
+}
+
+func NewRootEcho_heartbeat_Results(s *capnp.Segment) (Echo_heartbeat_Results, error) {
+	st, err := capnp.NewRootStruct(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0})
+	return Echo_heartbeat_Results{st}, err
+}
+
+func ReadRootEcho_heartbeat_Results(msg *capnp.Message) (Echo_heartbeat_Results, error) {
+	root, err := msg.RootPtr()
+	return Echo_heartbeat_Results{root.Struct()}, err
+}
+
+func (s Echo_heartbeat_Results) String() string {
+	str, _ := text.Marshal(0x9bdb9edfe278fc95, s.Struct)
+	return str
+}
+
+// Echo_heartbeat_Results_List is a list of Echo_heartbeat_Results.
+type Echo_heartbeat_Results_List struct{ capnp.List }
+
+// NewEcho_heartbeat_Results creates a new list of Echo_heartbeat_Results.
+func NewEcho_heartbeat_Results_List(s *capnp.Segment, sz int32) (Echo_heartbeat_Results_List, error) {
+	l, err := capnp.NewCompositeList(s, capnp.ObjectSize{DataSize: 0, PointerCount: 0}, sz)
+	return Echo_heartbeat_Results_List{l}, err
+}
+
+func (s Echo_heartbeat_Results_List) At(i int) Echo_heartbeat_Results {
+	return Echo_heartbeat_Results{s.List.Struct(i)}
+}
+
+func (s Echo_heartbeat_Results_List) Set(i int, v Echo_heartbeat_Results) error {
+	return s.List.SetStruct(i, v.Struct)
+}
+
+func (s Echo_heartbeat_Results_List) String() string {
+	str, _ := text.MarshalList(0x9bdb9edfe278fc95, s.List)
+	return str
+}
+
+// Echo_heartbeat_Results_Promise is a wrapper for a Echo_heartbeat_Results promised by a client call.
+type Echo_heartbeat_Results_Promise struct{ *capnp.Pipeline }
+
+func (p Echo_heartbeat_Results_Promise) Struct() (Echo_heartbeat_Results, error) {
+	s, err := p.Pipeline.Struct()
+	return Echo_heartbeat_Results{s}, err
+}
+
+const schema_85d3acc39d94e0f8 = "x\xda\x8cR=h\x13Q\x00\xfe\xbew\x17\xafj\xa5" +
+	"}\xbd\x08vQ\x09\xadP\xa9\xa1\xd5E\xba4\xa0\xa2" +
+	"U\x84\xbcN\x0a:\\\x8f\x90h/?\xe4\"V\x9c" +
+	"T\x8a\xee\xc6IZ\xaa\x82S\x1d\xaa\x93`ET\xe8" +
+	"*\xb8\x08\xe2_\xc1E\x17\x15\x04\x15\xed\xc9\xbb\xe4." +
+	"\xa9u\xe8v\xdc\xf7\xbd\xef\xef\xbd\xee/\x191\x9cX" +
+	"\x12\x80\xda\x99\xd8\x10<\xfa\xfc\xed~\xcf\xa5\xd3W " +
+	"7\x1b\xc1\x8f\xf7\xf5\x99g\xf3/\xa7\x01\xdac\xbcl" +
+	"\x1f\xa7\x05\xd8c\xbcj\xcf\xe8\xaf\xe0\xc6\xef\xa9\xe5w" +
+	"\xb3\xafoBv\x130-`\xdf4{\x083\x98}" +
+	"\xd5\x9f\xaa__\xb9\x03\x99\x8c\x90\"\x85F\xfe\x1c|" +
+	"zj{\xe6\xf1\xbd\xc6\x99\x84\xd0\x90\xe2&\x82\xf6I" +
+	"\x9e\x07\x83\x81cg\x1f\x9c\xb8;\xbf\xd0$\x84\x96\x0f" +
+	"\xf9\x09\xb4\x179\x0a\x06\xf5\xb7S\xfe\xae\x17\xd9\xc55" +
+	"\x09\xdf\xf0\xb6\xfd1\xa4\x7f\xe0a{\xa3V\x0e\x9e/" +
+	"]\x9b\xfb9\xb8\xedI#GC\xec+\x7f\x81\xf6\xf7" +
+	"P\xec\xd6\x91\x8b\x0bs\xf9\xa1\x95v\xb3\xadb\x19\xb4" +
+	"{\x85\xc6sn\xa1\x9cv\x9d\x0aK\x95\x91Cn\xa1" +
+	"\x8c,\xa9:\x8c\x04\x10\x1fe\x14X\x0e\xef\x86\x90\xfd" +
+	"\x16\x19\x97d\xb4\x90\xec\x1d\x87\x90\xd2\xea\xaa\x9c)\xe5" +
+	"3\x0c\x0a9\xa7Z\x9b\xc89`-\xc3,[FF" +
+	"\xd3(\x1d1j}\xe39\xff\x9cW\xa3\x1fs\xacR" +
+	"e\xe4\x80\xe3y\x13\x8e;\x99\xf6\xca\xf9&\xc3GD" +
+	"X\xab\x91u\xaaN\xd1\x07T\x87a\x02&\x019\x90" +
+	"\x02T\x9fA5$(\xc9$\xf5\xcf=G\x015h" +
+	"P\xed\x17\xb4\x8a~\x9e\x9d\x10\xec\x04\x03\xb7\xe9\x07\x80" +
+	"\xb2u\x07 e\xdbL\"r\xd65u\xac.\x9dK" +
+	"\x99\xb1\xe9\x96\xbda\x06\xaa\xa4\xe0\x8ej\xae\xe2]\x88" +
+	"\x1d\xda\xa7\x0e\xdbY\x8e;\xa9\xe76\xc3\xb9\xa3\x9bd" +
+	"\xf4\xb4\xa4LA\xc8\x84ey\xe5\xfc\xea\x0d\xc5\xbf\xfb" +
+	"\x8c6\xea\xb7\xe7H\xb5r\xac\xea\xf9\xff&Y\xa7j" +
+	"\xadO\xe0o\x00\x00\x00\xff\xff\x89\xd2\xeaS"
 
 func init() {
 	schemas.Register(schema_85d3acc39d94e0f8,
 		0x835d8112b2f2ebbc,
+		0x9bdb9edfe278fc95,
+		0xa3fe93942225d89e,
+		0xadbe401e5cc244fd,
 		0xb1aca658b36a4b29,
+		0xbd50d0267378de94,
+		0xc0182cf9a088c7c4,
 		0xfe3067a0b17b48a1)
 }

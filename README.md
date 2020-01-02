@@ -1,6 +1,6 @@
 # Ping Server in CAP'n Proto
 
-# A basic echo service
+## A basic echo service
 
 <p align='center'>
   <img src="./diagrams/ping.svg"/>
@@ -63,12 +63,20 @@ The implementation of the new method in the service is simple - we export the ca
 we previously exported the client's callback in the request:
 
 
-### Networking
-
 ### How to generate schema?
 ```bash
 cd echo
 capnp compile -I$GOPATH/src/zombiezen.com/go/capnproto2/std -ogo * -ocapnp
+```
+
+### Run the server and client
+
+Open two terminal and run the server and client seperately 
+```bash
+go run server.go  # T1
+
+go run server.go  # T2
+
 ```
 
 ### References

@@ -70,3 +70,6 @@ we previously exported the client's callback in the request:
 cd echo
 capnp compile -I$GOPATH/src/zombiezen.com/go/capnproto2/std -ogo * -ocapnp
 ```
+
+### References
+- [Cap'n Proto RPC implementation - OCaml](https://github.com/mirage/capnp-rpc)
